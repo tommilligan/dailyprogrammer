@@ -139,7 +139,27 @@ class TestBricks(unittest.TestCase):
         actual = self.bricks[0]
         self.assertEqual(actual, expected)
 
-class TestgenerateAlphabetBricks(unittest.TestCase):
+    def testRepr(self):
+        self.bricks.add()
+        self.bricks.add()
+        brick = self.bricks.add()
+        for c in "CAT":
+            brick.add(c)
+        expected = "[[], [], ['C', 'A', 'T']]"
+        self.assertEqual(str(self.bricks), expected)
+
+    def testContainsTrue(self):
+        brick = self.bricks.add()
+        brick = brick.add("x")
+        expected = brick
+        actual = self.bricks.contains("x")
+        self.assertEqual(actual, expected)
+
+    def testContainsFalse(self):
+        with self.assertRaises(ValueError):
+            self.bricks.contains("F")
+
+class TestGenerateAlphabetBricks(unittest.TestCase):
     def testSimple(self):
         expected = [["s"], ["p"], ["m"], ["a"]]
         actual = challenge.generateAlphabetBricks(["spam"])
@@ -188,5 +208,11 @@ class TestgenerateAlphabetBricks(unittest.TestCase):
     def testLongestFirstZ(self):
         expected = [["t"], ["z", "o"], ["x", "e"]]
         actual = challenge.generateAlphabetBricks(["txz", "te", "to"])
+        self.assertEqual(actual, expected)
+
+class TestMain(unittest.TestCase):
+    def testSimple(self):
+        expected = "m\na\nsh\np"
+        actual = challenge.main("spam\nham")
         self.assertEqual(actual, expected)
 

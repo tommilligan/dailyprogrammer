@@ -111,14 +111,6 @@ class Bricks(object):
         self.bricks.append(brick)
         return brick
 
-    def ignore(self, id):
-        """
-        Remove a brick by id from the sequence.
-
-        Should only be used for virtual bricks
-        """
-        [self.bricks.pop(i) for i, brick in enumerate(self.bricks) if brick.id == id]
-
     def contains(self, letter, ignore=[]):
         """
         Returns the first brick containing the letter
@@ -135,7 +127,7 @@ class Bricks(object):
         series = [b.contains(letter) and b.id not in ignore for b in self.bricks]
         try:
             i = series.index(True)
-        except IndexError:
+        except ValueError:
             raise ValueError("'{0}' not found in bricks {1}".format(letter, self.bricks))
         return self.bricks[i]
 
@@ -150,9 +142,6 @@ class BricksHandler(object):
 
         self.ignoreBricks = []
         self.reset()
-
-    def __repr__(self):
-        return "All bricks: {0}\nIgnoring bricks: {1}".format(repr(self.bricks), repr(self.ignoreBricks))
 
     def reset(self):
         self.logger.debug("Resetting")
