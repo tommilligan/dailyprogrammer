@@ -4,25 +4,6 @@ import unittest
 
 import dailyprogrammer.challenges.c20170811h0 as challenge
 
-class TestSortedDictValues(unittest.TestCase):
-    def testIntegers(self):
-        testInput = {"a": 0, "b": 1, "c": 2}
-        expected = ["a", "b", "c"]
-        actual = challenge.sortedDictValues(testInput)
-        self.assertEqual(actual, expected)
-
-    def testReverse(self):
-        testInput = {"a": 0, "b": 1, "c": 2}
-        expected = ["c", "b", "a"]
-        actual = challenge.sortedDictValues(testInput, reverse=True)
-        self.assertEqual(actual, expected)
-
-    def testStrings(self):
-        testInput = {"a": "x", "b": "y", "c": "z"}
-        expected = ["a", "b", "c"]
-        actual = challenge.sortedDictValues(testInput)
-        self.assertEqual(actual, expected)
-
 class TestLettersDecreasing(unittest.TestCase):
     def testWord(self):
         testInput = "banana"

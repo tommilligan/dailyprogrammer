@@ -5,17 +5,11 @@ https://www.reddit.com/r/dailyprogrammer/comments/6t0zua/20170811_challenge_326_
 """
 
 import collections
-import copy
-import logging
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+from dailyprogrammer.utils.logging import moduleLogger, objectLogger
+from dailyprogrammer.utils.structures import sortedDictValues
 
-def objectLogger(o):
-    name = o.__module__ + "." + o.__class__.__name__
-    newLogger = logging.getLogger(name)
-    newLogger.setLevel(logging.DEBUG)
-    return newLogger
+logger = moduleLogger(__name__)
 
 class BrickException(Exception):
     pass
@@ -185,21 +179,6 @@ class BricksHandler(object):
                     brick = self.bricks.add()
                     self.addLetterToBrick(letter, brick)
                     break
-
-
-def sortedDictValues(inputDict, reverse=False):
-    """
-    Returns the given dictionary as a list of keys sorted deterministically by value then key::
-
-        {"spam": 0, "eggs": 1, "ham": 1} => ["spam", "eggs", "ham"]
-
-    :param dict inputDict:
-    :param bool reverse: Reversed sorting
-    :rtype: list
-    """
-    sortedDict = sorted(inputDict.items(), key=lambda item: (item[1], item[0]), reverse=reverse)
-    values = [k for k, v in sortedDict]
-    return values
 
 def lettersDecreasing(para):
     """
