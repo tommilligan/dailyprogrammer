@@ -5,6 +5,7 @@ Installable dailyprogrammer package
 
 import argparse
 import importlib
+import logging
 import sys
 
 def mainParser():
@@ -20,6 +21,12 @@ def main():
     """
     Command line entry point
     """
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    ch.setFormatter(logging.Formatter("%(asctime)s|%(levelname)s|%(name)s|%(message)s"))
+    root = logging.getLogger()
+    root.handlers = [ch]
+
     parser = mainParser()
     args = parser.parse_args()
 
