@@ -47,7 +47,7 @@ def main():
     else:
         challengeInput = args.input
     
-    challengeModule = "dailyprogrammer.{0}".format(args.challenge)
+    challengeModule = "dailyprogrammer.challenges.{0}".format(args.challenge)
     challenge = importlib.import_module(challengeModule)
 
     t0 = time.time()

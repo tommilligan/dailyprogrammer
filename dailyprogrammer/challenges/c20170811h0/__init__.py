@@ -189,7 +189,7 @@ class BricksHandler(object):
 
 def sortedDictValues(inputDict, reverse=False):
     """
-    Returns the given dictionary as a list of keys sorted by value then key::
+    Returns the given dictionary as a list of keys sorted deterministically by value then key::
 
         {"spam": 0, "eggs": 1, "ham": 1} => ["spam", "eggs", "ham"]
 

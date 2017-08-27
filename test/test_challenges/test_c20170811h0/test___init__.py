@@ -2,7 +2,7 @@
 
 import unittest
 
-import dailyprogrammer.c20170811h0 as challenge
+import dailyprogrammer.challenges.c20170811h0 as challenge
 
 class TestSortedDictValues(unittest.TestCase):
     def testIntegers(self):
