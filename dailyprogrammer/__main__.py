@@ -7,10 +7,18 @@ import argparse
 import importlib
 import logging
 import sys
-import time
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+from dailyprogrammer.utils.logging import moduleLogger, timeit
+
+logger = moduleLogger(__name__)
+
+def challengeTimer(elapsed):
+    """
+    Log the challenge duration
+
+    :param float elapsed: In seconds
+    """
+    logger.warn("challenge ran in %0.3f s" % elapsed)
 
 def mainParser():
     """
@@ -50,12 +58,7 @@ def main():
     challengeModule = "dailyprogrammer.challenges.{0}".format(args.challenge)
     challenge = importlib.import_module(challengeModule)
 
-    t0 = time.time()
-    result = challenge.main(challengeInput)
-    t1 = time.time()
-    elapsed = t1 - t0
-    logger.warn("challenge ran in %0.3f s" % elapsed)
-
+    result = timeit(challengeTimer)(challenge.main)(challengeInput)
     print(result)
 
 if __name__ == "__main__":
