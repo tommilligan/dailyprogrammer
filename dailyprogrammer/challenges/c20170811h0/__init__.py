@@ -234,6 +234,3 @@ def main(challengeInput):
     faces = ["".join(brick) for brick in bricksData]
     challengeOutput = "\n".join(faces)
     return challengeOutput
-
-if __name__ == "__main__":
-    main()

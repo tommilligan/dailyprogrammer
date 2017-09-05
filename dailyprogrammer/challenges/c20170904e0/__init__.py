@@ -30,5 +30,3 @@ def main(challengeInput):
     challengeOutput = ", ".join("({0:.3f}, {1:.3f})".format(*point) for point in points)
     return challengeOutput
 
-if __name__ == "__main__":
-    main()
