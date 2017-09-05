@@ -19,7 +19,10 @@ def minimumBoundingOrthogonal(circles):
     :param list circles: A list of circle 3-tuples (x, y, r)
     :rtype: tuple
     """
-    return ((0.0, 0.1), (0.0, 0.1234), (0.0, 0.1), (0.0, 0.98765))
+    extrema = [(x - r, x + r, y - r, y + r) for x, y, r in circles]
+    xmins, xmaxs, ymins, ymaxs = zip(*extrema)
+    xmin, xmax, ymin, ymax = (min(xmins), max(xmaxs), min(ymins), max(ymaxs))
+    return ((xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin))
 
 def main(challengeInput):
     circles = [(float(s) for s in l.split(",")) for l in challengeInput.split("\n")]
