@@ -51,7 +51,7 @@ def main():
     # Alter logging
     if args.verbose == 1:
         ch.setLevel(logging.INFO)
-    elif args.verbose == 2:
+    elif args.verbose >= 2:
         ch.setLevel(logging.DEBUG)
 
     logger.debug(args)
