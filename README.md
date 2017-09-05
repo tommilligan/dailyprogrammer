@@ -16,17 +16,19 @@ pip install ./dailyprogrammer
 
 ## New challanges
 
-New challenges can be added in a modular format by creading a new submodule under `dailyprogrammer.challanges`, with a `main` function that accepts a string as input.
+New challenges can be added in a modular format by creading a new submodule under `dailyprogrammer.challanges`, with a `main` function that accepts and returns a string.
 
 ```python
 # dailyprogrammer/challanges/<challange_name>/__init__.py
 
-def main(inputString):
-    # do challange <challange_name>!
-    return outputString
+def main(challengeInput):
+    challengeOutput = someComplexFunction(challengeInput)
+    return challengeOutput
 ```
 
-This function will be automagically imported and called by the cli.
+This function will be automagically imported and called by the command line interface.
+
+Implemented challenges can be listed with `dailyprogrammer --list`.
 
 ```bash
 dailyprogrammer <challenge_name> <challange_input>
