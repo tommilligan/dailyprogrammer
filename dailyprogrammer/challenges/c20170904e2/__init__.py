@@ -89,7 +89,6 @@ def coTangent(p, q, bottom=False):
         phi = pi / 2
     
     # theta is the angle of the tangent compared to phi
-    logger.debug("Math domain error preceeded by; %s, %s, %s", dr, l, dr/l)
     try:
         theta = asin(dr / l)
     # If there was a ValueError, |dr / l| was > 1, therefore circle areas subset
@@ -98,7 +97,7 @@ def coTangent(p, q, bottom=False):
 
     psi = phi + (mirror * theta)
 
-    logger.debug("phi; %.3f, theta; %.3f, psi; %.3f", phi, theta, psi)
+    logger.debug("co-tanget constuction; phi %.3f, theta %.3f, psi %.3f", phi, theta, psi)
 
     tp = (px - (sin(psi) * pr * mirror),
           py + (cos(psi) * pr * mirror))
