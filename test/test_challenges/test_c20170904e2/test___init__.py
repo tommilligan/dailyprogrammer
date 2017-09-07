@@ -76,3 +76,18 @@ class TestCoTangent(unittest.TestCase):
         actual = challenge.coTangent(*testInput, bottom=True)
         for a, e in zip(actual, expected):
             self.assertAlmostEqual(a, e)
+
+    def testLargerSize(self):
+        testInput = ((0, 0, 1), (12, 10, 3))
+        expected = (1.0784561912118524, 1.4707371472711144)
+        actual = challenge.coTangent(*testInput)
+        for a, e in zip(actual, expected):
+            self.assertAlmostEqual(a, e)
+
+    def testSmallerSize(self):
+        testInput = ((0, 0, 1), (12, 10, 1 / 3))
+        expected = (0.763438390645699, 1.2581089683774196)
+        actual = challenge.coTangent(*testInput)
+        for a, e in zip(actual, expected):
+            self.assertAlmostEqual(a, e)
+   
