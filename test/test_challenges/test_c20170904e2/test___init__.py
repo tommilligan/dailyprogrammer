@@ -56,13 +56,10 @@ class TestCoTangent(unittest.TestCase):
         for a, e in zip(actual, expected):
             self.assertAlmostEqual(a, e)
 
+    def testSameSizeBottom(self, bottom=True):
+        testInput = ((0.5, 0.5, 1), (2.5, 1.5, 1))
+        expected = (0.5, 1.3680339887498947 - 2)
+        actual = challenge.coTangent(*testInput)
+        for a, e in zip(actual, expected):
+            self.assertAlmostEqual(a, e)
 
-
-"""
-class TestMain(unittest.TestCase):
-    def testConversion(self):
-        testInput = "0,0,1\n0.5,-0.5,1"
-        expected = "(-1.000, -1.500), (-1.000, 1.000), (1.500, 1.000), (1.500, -1.500)"
-        actual = challenge.main(testInput)
-        self.assertEqual(actual, expected)
-"""

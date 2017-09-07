@@ -29,6 +29,25 @@ logger = moduleLogger(__name__)
 
 INF = float('inf')
 
+def line(a, b):
+    """
+    Return a line 2-tuple (m, c) from the input points (x, y)
+
+    :param tuple a: A 2-tuple point (x, y)
+    :param tuple b: As above
+    """
+    logger.debug("Calculating line from points")
+    dx, dy = (i[1] - i[0] for i in zip(a, b))
+    try:
+        m = (dy / dx)
+        c = a[1] - (m * a[0])
+    except ZeroDivisionError:
+        m = INF
+        c = a[0]
+    line = (m, c)
+    logger.debug("Calculated line; y = %.3fx + %.3f", m, c)
+    return line
+
 def coTangent(p, q, bottom=False):
     """
     Calculate the upper (edge-case, left) cotangent of two circles ``p`` and ``q``::
@@ -43,6 +62,8 @@ def coTangent(p, q, bottom=False):
     :param tuple q: As p
     :rtype: 2-tuple representing line (m, c)
     """
+    logger.debug("Calculating cotangent of circles")
+
     px, py, pr = p
     qx, qy, qr = q
 
@@ -64,16 +85,9 @@ def coTangent(p, q, bottom=False):
     tq = (qx - (sin(psi) * qr),
           qy + (cos(psi) * qr))
 
-    logger.debug("Calculated tangent points; %s, %s", tp, tq)
-
-    tdx, tdy = (i[1] - i[0] for i in zip(tp, tq))
-    try:
-        tm = (tdy / tdx)
-        tc = tp[1] - (tm * tp[0])
-    except ZeroDivisionError:
-        tm = INF
-        tc = tp[0]
-    tangent = (tm, tc)
+    for point in (tp, tq):
+        logger.debug("Calculated tangent point; (%.3f, %.3f)", *point)
+    tangent = line(tp, tq)
     return tangent
 
 
