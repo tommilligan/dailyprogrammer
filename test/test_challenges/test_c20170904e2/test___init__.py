@@ -129,3 +129,52 @@ class TestCoTangent(unittest.TestCase):
         for a, e in zip(actual, expected):
             self.assertAlmostEqual(a, e)
 
+class TestFindStartingCircle(unittest.TestCase):
+    def testSingle(self):
+        testInput = [(0, 0, 1)]
+        expected = (0, 0, 1)
+        actual = challenge.findStartingCircle(testInput)
+        self.assertEqual(actual, expected)
+
+    def testSimple(self):
+        testInput = [(0, 0, 1), (2, 2, 1)]
+        expected = (0, 0, 1)
+        actual = challenge.findStartingCircle(testInput)
+        self.assertEqual(actual, expected)
+
+    def testDouble(self):
+        testInput = [(0, 0, 1), (0, -2, 1)]
+        expected = (0, -2, 1)
+        actual = challenge.findStartingCircle(testInput)
+        self.assertEqual(actual, expected)
+
+    def testOverlapping(self):
+        testInput = [(0, 0, 1), (0, 2, 5), (4, -1, 0.5)]
+        expected = (0, 2, 5)
+        actual = challenge.findStartingCircle(testInput)
+        self.assertEqual(actual, expected)
+
+class TestIntraTangents(unittest.TestCase):
+    def testSingle(self):
+        testInput = ((0, 0, 1), [(0, 0, 1)])
+        expected = []
+        actual = challenge.intraTangents(*testInput)
+        for a, e in zip(actual, expected):
+            self.assertEqual(a, e)
+
+    def testSimple(self):
+        testInput = ((0, 0, 1), [(0, 0, 1), (3, 3, 1), (4, -1, 0.5)])
+        expected = [((1.0, 1.414213562373095), (3, 3, 1)),
+                    ((-0.38389448844241986, 1.0711559075393586), (4, -1, 0.5))]
+        actual = challenge.intraTangents(*testInput)
+        for a, e in zip(actual, expected):
+            self.assertEqual(a, e)
+
+"""
+class TestConvexHullDisks(unittest.TestCase):
+    def testSingle(self):
+        testInput = [(0, 0, 1), (3, 3, 1), (4, -1, 0.5)]
+        expected = (0, 0, 1)
+        actual = challenge.convexHullDisks(testInput)
+        self.assertEqual(actual, expected)
+"""

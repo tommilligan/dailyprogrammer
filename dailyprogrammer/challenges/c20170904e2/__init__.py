@@ -59,7 +59,7 @@ def coTangent(p, q, bottom=False):
          /
         /o   p
 
-    If bottom is ``True``, the mirroring tangent on the bottom is found.
+    If bottom is ``True``, the mirroring tangent on the bottom(right) is found.
 
     :param tuple p: A 3-tuple representing the circle (x, y, r)
     :param tuple q: As p
@@ -109,50 +109,52 @@ def coTangent(p, q, bottom=False):
     tangent = line(tp, tq)
     return tangent
 
-
-def alpha(L1, L2):
+def findStartingCircle(circles):
     """
-    Returns the positive angle swept clockwise from L1 to L2
-    """
-    pass
-
-def mergeHulls(hullP, hullQ):
-    """
-    Returns a set of arcs describing the convex hull of two convex hulls
-    """
-    return hullP
-
-def convexHullDiskPair(circleP, circleQ):
-    """
-    Returns a set of arcs describing the convex hull of the disk pair.
-
-    Curved sections are converted to a series of flat ars parallel to each opposing face.
-
-    :param tuple circleP: A circle 3-tuple (x, y, r)
-    :param tuple circleQ: A circle 3-tuple (x, y, r)
-    """
-    return circleP
-
-def convexHullDisks(circles):
-    """
-    Returns a set of arcs describing the convex hull of the disk set.
-
-    Curved sections are converted to a series of flat ars parallel to each opposing face.
+    Return the circle we should start at (leftmost edge of the list)
 
     :param list circles: A list of circle 3-tuples (x, y, r)
     """
+    logger.debug("Finding circle to start from")
+    # Array of (xmin, circle) tuples
+    leftmostCircles = [(c[0] - c[2], c) for c in circles]
+    leftmostEdge = min([k for k, c in leftmostCircles])
+    logger.debug("Leftmost edge is %.3f", leftmostEdge)
+
+    leftmostCircles = [i for i in leftmostCircles if i[0] == leftmostEdge]
+    leftmostCircles = sorted(leftmostCircles, key=lambda i: i[1][1])
+    circle = leftmostCircles[0][1]
+    return circle
+
+def intraTangents(startingCircle, circles):
+    """
+    Return all valid tangents from ``startingCircle`` to ``circles``
+
+    Suppress geometric errors encountered during finding co-tangents
+
+    :param startingCircle: Circle to use in each co-tangent pair
+    :param circles: Other circles
+    """
+    for c in circles:
+        try:
+            tangent = coTangent(startingCircle, c)
+            yield (tangent, c)
+        except GeometryException as e:
+            logger.warn("Could not form tangent from %s to %s; %s", startingCircle, c, e)
+
+def convexHullDisks(circles):
+    """
+    Returns a set of lines describing the convex hull of the disk set..
+
+    :param list circles: A list of circle 3-tuples (x, y, r)
+    """
+    # Ensure iterators are fulfiled, persist to memory
     circles = list(circles)
-    lenCircles = len(circles)
-    if lenCircles > 2:
-        midIndex = int(lenCircles / 2)
-        setP = circles[:midIndex]
-        setQ = circles[midIndex:]
-        hull = mergeHulls(convexHullDisks(setP),
-                          convexHullDisks(setQ))
-    elif lenCircles == 2:
-        convexHullDiskPair(*circles)
-    else:
-        hull = circles[0]
+
+    startingCircle = findStartingCircle(circles)
+    tangents = intraTangents(startingCircle, circles)
+    tangents = list(tangents)
+    return None 
 
 
 def minimumBounding(circles):
