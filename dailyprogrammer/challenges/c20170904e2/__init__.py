@@ -29,6 +29,9 @@ logger = moduleLogger(__name__)
 
 INF = float('inf')
 
+class GeometryException(Exception):
+    pass
+
 def line(a, b):
     """
     Return a line 2-tuple (m, c) from the input points (x, y)
@@ -75,6 +78,8 @@ def coTangent(p, q, bottom=False):
     dx, dy, dr = (i[1] - i[0] for i in zip(p, q))
 
     l = sqrt(dx**2 + dy**2)
+    if l == 0.0:
+        raise GeometryException("Circles with the same center cannot have co-tangents")
 
     # phi is the angle at which the circle centres are aligned
     try:
@@ -84,7 +89,12 @@ def coTangent(p, q, bottom=False):
         phi = pi / 2
     
     # theta is the angle of the tangent compared to phi
-    theta = asin(dr / l)
+    logger.debug("Math domain error preceeded by; %s, %s, %s", dr, l, dr/l)
+    try:
+        theta = asin(dr / l)
+    # If there was a ValueError, |dr / l| was > 1, therefore circle areas subset
+    except ValueError:
+        raise GeometryException("One circle cannot be fully contained by the other")
 
     psi = phi + (mirror * theta)
 

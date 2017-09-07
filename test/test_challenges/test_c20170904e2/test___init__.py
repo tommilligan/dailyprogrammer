@@ -90,4 +90,42 @@ class TestCoTangent(unittest.TestCase):
         actual = challenge.coTangent(*testInput)
         for a, e in zip(actual, expected):
             self.assertAlmostEqual(a, e)
-   
+
+    def testSameCenter(self):
+        testInput = ((0, 0, 1), (0, 0, 2))
+        with self.assertRaises(challenge.GeometryException):
+            challenge.coTangent(*testInput)
+
+    def testSubsetting(self):
+        testInput = ((0, 0, 1), (0.25, 0, 0.25))
+        with self.assertRaises(challenge.GeometryException):
+            challenge.coTangent(*testInput)
+
+    def testTouchingInner(self):
+        testInput = ((0, 0, 1), (0.5, 0, 0.5))
+        expected = (INF, 1)
+        actual = challenge.coTangent(*testInput)
+        for a, e in zip(actual, expected):
+            self.assertAlmostEqual(a, e)
+
+    def testTouchingInnerBottom(self):
+        testInput = ((0, 0, 1), (0.5, 0, 0.5))
+        expected = (INF, 1)
+        actual = challenge.coTangent(*testInput, bottom=True)
+        for a, e in zip(actual, expected):
+            self.assertAlmostEqual(a, e)
+
+    def testTouchingOuter(self):
+        testInput = ((0, 0, 1), (1.5, 0, 0.5))
+        expected = (-0.35355339059327373, 1.0606601717798212)
+        actual = challenge.coTangent(*testInput)
+        for a, e in zip(actual, expected):
+            self.assertAlmostEqual(a, e)
+
+    def testTouchingOuterBottom(self):
+        testInput = ((0, 0, 1), (1.5, 0, 0.5))
+        expected = (0.35355339059327373, -1.0606601717798212)
+        actual = challenge.coTangent(*testInput, bottom=True)
+        for a, e in zip(actual, expected):
+            self.assertAlmostEqual(a, e)
+
