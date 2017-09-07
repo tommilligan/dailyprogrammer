@@ -64,6 +64,11 @@ def coTangent(p, q, bottom=False):
     """
     logger.debug("Calculating cotangent of circles")
 
+    if bottom:
+        mirror = -1
+    else:
+        mirror = 1
+
     px, py, pr = p
     qx, qy, qr = q
 
@@ -71,19 +76,24 @@ def coTangent(p, q, bottom=False):
 
     l = sqrt(dx**2 + dy**2)
 
+    # phi is the angle at which the circle centres are aligned
     try:
         phi = atan(dy / dx)
     # If the circles are stacked horizontally, take leftmost tangent
     except ZeroDivisionError:
         phi = pi / 2
+    
+    # theta is the angle of the tangent compared to phi
     theta = asin(dr / l)
 
-    psi = phi + theta
+    psi = phi + (mirror * theta)
 
-    tp = (px - (sin(psi) * pr),
-          py + (cos(psi) * pr))
-    tq = (qx - (sin(psi) * qr),
-          qy + (cos(psi) * qr))
+    logger.debug("phi; %.3f, theta; %.3f, psi; %.3f", phi, theta, psi)
+
+    tp = (px - (sin(psi) * pr * mirror),
+          py + (cos(psi) * pr * mirror))
+    tq = (qx - (sin(psi) * qr * mirror),
+          qy + (cos(psi) * qr * mirror))
 
     for point in (tp, tq):
         logger.debug("Calculated tangent point; (%.3f, %.3f)", *point)
