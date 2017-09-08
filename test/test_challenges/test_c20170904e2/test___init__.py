@@ -145,6 +145,18 @@ class TestFindStartingCircle(unittest.TestCase):
         actual = challenge.findStartingCircle(testInput)
         self.assertEqual(actual, expected)
 
+    def testSimpleBottom(self):
+        testInput = [(0, 0, 1), (2, 2, 1)]
+        expected = (2, 2, 1)
+        actual = challenge.findStartingCircle(testInput, bottom=True)
+        self.assertEqual(actual, expected)
+
+    def testDouble(self):
+        testInput = [(0, 0, 1), (0, -2, 1)]
+        expected = (0, 0, 1)
+        actual = challenge.findStartingCircle(testInput, bottom=True)
+        self.assertEqual(actual, expected)
+
 class TestIntraTangents(unittest.TestCase):
     def testSingle(self):
         testInput = ((0, 0, 1), [(0, 0, 1)])
@@ -164,11 +176,11 @@ class TestIntraTangents(unittest.TestCase):
             self.assertEqual(a[1], e[1])
 
 
-class TestConvexHullDisks(unittest.TestCase):
+class TestConvexHullDisksHalf(unittest.TestCase):
     def testSingle(self):
         testInput = [(0, 0, 1), (3, 3, 1), (6, 0, 1)]
         expected = [(1.0, 1.414213562373095), (-1, 7.414213562373094)]
-        actual = challenge.convexHullDisks(testInput)
+        actual = challenge.convexHullDisksHalf(testInput)
         for a, e in zip(actual, expected):
             assertLineEqual(self, a, e)
 

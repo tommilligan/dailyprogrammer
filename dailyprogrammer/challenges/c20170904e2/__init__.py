@@ -109,21 +109,26 @@ def coTangent(p, q, bottom=False):
     tangent = line(tp, tq)
     return tangent
 
-def findStartingCircle(circles):
+def findStartingCircle(circles, bottom=False):
     """
-    Return the circle we should start at (leftmost edge of the list)
+    Return the circle we should start at (leftmost edge of the list, rightmost for bottom)
 
     :param list circles: A list of circle 3-tuples (x, y, r)
     """
     logger.debug("Finding circle to start from")
-    # Array of (xmin, circle) tuples
-    leftmostCircles = [(c[0] - c[2], c) for c in circles]
-    leftmostEdge = min([k for k, c in leftmostCircles])
-    logger.debug("Leftmost edge is %.3f", leftmostEdge)
+    # Array of (xmin, circle) tuples (or (xmax, circle) tuple if bottom)
+    if bottom:
+        extremeCircles = [(c[0] + c[2], c) for c in circles]
+        extremeEdge = max([k for k, c in extremeCircles])
+    else:
+        extremeCircles = [(c[0] - c[2], c) for c in circles]
+        extremeEdge = min([k for k, c in extremeCircles])
+    
+    logger.debug("%s edge is %.3f", "Leftmost" if bottom else "Rightmost", extremeEdge)
 
-    leftmostCircles = [i for i in leftmostCircles if i[0] == leftmostEdge]
-    leftmostCircles = sorted(leftmostCircles, key=lambda i: i[1][1])
-    circle = leftmostCircles[0][1]
+    extremeCircles = [i for i in extremeCircles if i[0] == extremeEdge]
+    extremeCircles = sorted(extremeCircles, key=lambda i: i[1][1], reverse=bottom)
+    circle = extremeCircles[0][1]
     logger.debug("Starting circle is %s", circle)
     return circle
 
@@ -147,7 +152,7 @@ def intraTangents(startingCircle, circles):
         except GeometryException as e:
             logger.warn("Could not form tangent from %s to %s; %s", startingCircle, c, e)
 
-def convexHullDisks(circles):
+def convexHullDisksHalf(circles, bottom=False):
     """
     Returns a set of lines describing the convex hull of the disk set..
 
@@ -158,7 +163,7 @@ def convexHullDisks(circles):
     # Ensure iterators are fulfiled, persist to memory
     circles = list(circles)
 
-    currentCircle = findStartingCircle(circles)
+    currentCircle = findStartingCircle(circles, bottom=bottom)
     hullLines = []
     while True:
         validTangents = intraTangents(currentCircle, circles)
