@@ -65,7 +65,7 @@ def coTangent(p, q, bottom=False):
     :param tuple q: As p
     :rtype: 2-tuple representing line (m, c)
     """
-    logger.debug("Calculating cotangent of circles")
+    logger.debug("Calculating cotangent of circles; %s, %s", p, q)
 
     if bottom:
         mirror = -1
@@ -124,6 +124,7 @@ def findStartingCircle(circles):
     leftmostCircles = [i for i in leftmostCircles if i[0] == leftmostEdge]
     leftmostCircles = sorted(leftmostCircles, key=lambda i: i[1][1])
     circle = leftmostCircles[0][1]
+    logger.debug("Starting circle is %s", circle)
     return circle
 
 def intraTangents(startingCircle, circles):
@@ -132,8 +133,12 @@ def intraTangents(startingCircle, circles):
 
     Suppress geometric errors encountered during finding co-tangents
 
+    Returns (tangent, circle), where tangent is a line of the form (m, c)
+    and circle is the circle (x, y, r) the tangent was found to.
+
     :param startingCircle: Circle to use in each co-tangent pair
     :param circles: Other circles
+    :rtype: 2-tuple of (tangent, circle)
     """
     for c in circles:
         try:
@@ -148,13 +153,34 @@ def convexHullDisks(circles):
 
     :param list circles: A list of circle 3-tuples (x, y, r)
     """
+    logger.debug("Finding convex hull")
+
     # Ensure iterators are fulfiled, persist to memory
     circles = list(circles)
 
-    startingCircle = findStartingCircle(circles)
-    tangents = intraTangents(startingCircle, circles)
-    tangents = list(tangents)
-    return None 
+    currentCircle = findStartingCircle(circles)
+    hullLines = []
+    while True:
+        validTangents = intraTangents(currentCircle, circles)
+
+        # Filter out all tangents that have more positive gradient
+        # than the last tangent (i.e. would make hull concave)
+        if hullLines:
+            previousGradient = hullLines[-1][0]
+            logger.debug("The previous gradient was %.3f", previousGradient)
+            validTangents = [vT for vT in validTangents if vT[0][0] < previousGradient]
+
+        # Reverse sort tangents by gradient
+        validTangents = sorted(validTangents, reverse=True, key=lambda validTangent: validTangent[0][0])
+        if validTangents:
+            nextHullLine, nextCircle = validTangents[0]
+            logger.debug("Next hull line is %s to circle %s", nextHullLine, nextCircle)
+            hullLines.append(nextHullLine)
+            currentCircle = nextCircle
+        else:
+            logger.debug("No remaining valid tangents, hull section complete")
+            break
+    return hullLines 
 
 
 def minimumBounding(circles):
