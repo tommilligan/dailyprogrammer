@@ -121,7 +121,7 @@ class TestCoTangent(unittest.TestCase):
 
     def testSameSizeReversedArguments(self):
         testInput = ((2, 1, 1), (0, 0, 1))
-        expected = (0.5, 1.118033988749895)
+        expected = (0.5, -1.118033988749895)
         actual = challenge.coTangent(*testInput)
         assertLineEqual(self, actual, expected)
 
@@ -271,6 +271,16 @@ class TestConvexHullDisksHalf(unittest.TestCase):
         assertLinesEqual(self, actual, expected)
 
 class TestConvexHullDisks(unittest.TestCase):
+    def testSingle(self):
+        testInput = [(0, 0, 1)]
+        with self.assertRaises(ValueError):
+            challenge.convexHullDisks(testInput)
+
+    def testEffectivelySingle(self):
+        testInput = [(0, 0, 1), (0, 0, 0.1)]
+        with self.assertRaises(ValueError):
+            challenge.convexHullDisks(testInput)
+
     def testSimple(self):
         testInput = [(0, 0, 1), (3, 3, 1), (6, 0, 1)]
         expected = [(1.0, 1.414213562373095), (-1, 7.414213562373094), (0, -1)]
