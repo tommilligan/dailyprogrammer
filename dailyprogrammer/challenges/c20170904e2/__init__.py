@@ -132,7 +132,7 @@ def findStartingCircle(circles, bottom=False):
     logger.debug("Starting circle is %s", circle)
     return circle
 
-def intraTangents(startingCircle, circles):
+def intraTangents(startingCircle, circles, bottom=False):
     """
     Return all valid tangents from ``startingCircle`` to ``circles``
 
@@ -147,18 +147,18 @@ def intraTangents(startingCircle, circles):
     """
     for c in circles:
         try:
-            tangent = coTangent(startingCircle, c)
+            tangent = coTangent(startingCircle, c, bottom=bottom)
             yield (tangent, c)
         except GeometryException as e:
             logger.warn("Could not form tangent from %s to %s; %s", startingCircle, c, e)
 
 def convexHullDisksHalf(circles, bottom=False):
     """
-    Returns a set of lines describing the convex hull of the disk set..
+    Returns a set of lines describing half a convex hull of the disk set.
 
     :param list circles: A list of circle 3-tuples (x, y, r)
     """
-    logger.debug("Finding convex hull")
+    logger.debug("Finding convex half-hull")
 
     # Ensure iterators are fulfiled, persist to memory
     circles = list(circles)
@@ -166,7 +166,7 @@ def convexHullDisksHalf(circles, bottom=False):
     currentCircle = findStartingCircle(circles, bottom=bottom)
     hullLines = []
     while True:
-        validTangents = intraTangents(currentCircle, circles)
+        validTangents = intraTangents(currentCircle, circles, bottom=bottom)
 
         # Filter out all tangents that have more positive gradient
         # than the last tangent (i.e. would make hull concave)
@@ -187,6 +187,21 @@ def convexHullDisksHalf(circles, bottom=False):
             break
     return hullLines 
 
+def convexHullDisks(circles):
+    """
+    Returns a set of lines describing the convex hull of the disk set.
+
+    :param list circles: A list of circle 3-tuples (x, y, r)
+    """
+    logger.debug("Finding convex hull")
+
+    # Ensure iterators are fulfiled, persist to memory
+    circles = list(circles)
+
+    hullLines = convexHullDisksHalf(circles)
+    hullLines.extend(convexHullDisksHalf(circles, bottom=True))
+
+    return hullLines
 
 def minimumBounding(circles):
     """

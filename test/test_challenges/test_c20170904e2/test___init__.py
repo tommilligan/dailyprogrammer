@@ -10,8 +10,21 @@ def assertLineEqual(self, actual, expected):
     """
     Assert lines stored as a (float, float) are almost equal
     """
-    for a, e in zip(actual, expected):
-        self.assertAlmostEqual(a, e)
+    try:
+        for a, e in zip(actual, expected):
+            self.assertAlmostEqual(a, e)
+    except AssertionError as e:
+        raise AssertionError("Line %s was expected to be %s; %s" % (actual, expected, e))
+
+def assertLinesEqual(self, actual, expected):
+    """
+    Assert an array of lines are almost equal
+    """
+    try:
+        for a, e in zip(actual, expected):
+            assertLineEqual(self, a, e)
+    except AssertionError as e:
+        raise AssertionError("Lines %s were expected to be %s; %s" % (actual, expected, e))
 
 class TestCoTangent(unittest.TestCase):
     def testSameSize(self):
@@ -177,10 +190,27 @@ class TestIntraTangents(unittest.TestCase):
 
 
 class TestConvexHullDisksHalf(unittest.TestCase):
-    def testSingle(self):
+    def testSimple(self):
         testInput = [(0, 0, 1), (3, 3, 1), (6, 0, 1)]
         expected = [(1.0, 1.414213562373095), (-1, 7.414213562373094)]
         actual = challenge.convexHullDisksHalf(testInput)
-        for a, e in zip(actual, expected):
-            assertLineEqual(self, a, e)
+        assertLinesEqual(self, actual, expected)
+
+    def testSimple(self):
+        testInput = [(0, 0, 1), (3, 3, 1), (6, 0, 1)]
+        expected = [(0, -1)]
+        actual = challenge.convexHullDisksHalf(testInput, bottom=True)
+        assertLinesEqual(self, actual, expected)
+
+    def testStackedVertical(self):
+        testInput = [(0, 0, 1), (0, 1, 1), (3, 3, 1), (6, 0, 1)]
+        expected = [(INF, -1), (0.6666666666666666, 2.201850425154663), (-1, 7.414213562373094)]
+        actual = challenge.convexHullDisksHalf(testInput)
+        assertLinesEqual(self, actual, expected)
+
+    def testStackedHorizontal(self):
+        testInput = [(0, 0, 1), (2, 3, 1), (3, 3, 1), (6, 0, 1)]
+        expected = [(1.5, 1.8027756377319948), (0.0, 4.0), (-1, 7.414213562373094)]
+        actual = challenge.convexHullDisksHalf(testInput)
+        assertLinesEqual(self, actual, expected)
 
