@@ -196,7 +196,7 @@ class TestConvexHullDisksHalf(unittest.TestCase):
         actual = challenge.convexHullDisksHalf(testInput)
         assertLinesEqual(self, actual, expected)
 
-    def testSimple(self):
+    def testSimpleBottom(self):
         testInput = [(0, 0, 1), (3, 3, 1), (6, 0, 1)]
         expected = [(0, -1)]
         actual = challenge.convexHullDisksHalf(testInput, bottom=True)
@@ -214,3 +214,9 @@ class TestConvexHullDisksHalf(unittest.TestCase):
         actual = challenge.convexHullDisksHalf(testInput)
         assertLinesEqual(self, actual, expected)
 
+class TestConvexHullDisks(unittest.TestCase):
+    def testSimple(self):
+        testInput = [(0, 0, 1), (3, 3, 1), (6, 0, 1)]
+        expected = [(1.0, 1.414213562373095), (-1, 7.414213562373094), (0, -1)]
+        actual = challenge.convexHullDisksHalf(testInput)
+        assertLinesEqual(self, actual, expected)
