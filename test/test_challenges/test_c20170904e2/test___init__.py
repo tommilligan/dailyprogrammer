@@ -6,12 +6,26 @@ import dailyprogrammer.challenges.c20170904e2 as challenge
 
 INF = float('inf')
 
+# Testing functions
+
+def exactZip(*args):
+    """
+    Zip, but raise a ValueError if the iterables are different length
+    
+    :param args: Multiple iterables to zip, each with a known length
+    """
+    lengths = [len(a) for a in args]
+    if len(set(lengths)) <= 1:
+        return zip(*args)
+    else:
+        raise ValueError("Iterables were of different lengths")
+
 def assertLineEqual(self, actual, expected):
     """
     Assert lines stored as a (float, float) are almost equal
     """
     try:
-        for a, e in zip(actual, expected):
+        for a, e in exactZip(actual, expected):
             self.assertAlmostEqual(a, e)
     except AssertionError as e:
         raise AssertionError("Line %s was expected to be %s; %s" % (actual, expected, e))
@@ -21,10 +35,52 @@ def assertLinesEqual(self, actual, expected):
     Assert an array of lines are almost equal
     """
     try:
-        for a, e in zip(actual, expected):
+        for a, e in exactZip(actual, expected):
             assertLineEqual(self, a, e)
     except AssertionError as e:
         raise AssertionError("Lines %s were expected to be %s; %s" % (actual, expected, e))
+
+class TestExactZip(unittest.TestCase):
+    def testEqualLength(self):
+        testInput = ((0.5, 1.0), (0.5, 1.0))
+        expected = [(0.5, 0.5), (1.0, 1.0)]
+        actual = list(exactZip(*testInput))
+        self.assertEqual(actual, expected)
+
+    def testUnequalLength(self):
+        testInput = ((0.5, 1.0, 2.0), (0.5, 1.0))
+        with self.assertRaises(ValueError):
+            exactZip(*testInput)
+
+class TestAssertLineEqual(unittest.TestCase):
+    def testEqual(self):
+        testInput = ((0.5, 1.0), (0.5, 1.0))
+        assertLineEqual(self, *testInput)
+
+    def testAlmostEqual(self):
+        testInput = ((0.5, 1.0), (0.5, 0.9999999999999))
+        assertLineEqual(self, *testInput)
+
+    def testNotEqual(self):
+        testInput = ((0.5, 1.1), (0.5, 1))
+        with self.assertRaises(AssertionError):
+            assertLineEqual(self, *testInput)
+
+class TestAssertLinesEqual(unittest.TestCase):
+    def testEqual(self):
+        testInput = ([(0.5, 1.0), (1.5, 2.0)], [(0.5, 1.0), (1.5, 2.0)])
+        assertLinesEqual(self, *testInput)
+
+    def testAlmostEqual(self):
+        testInput = ([(0.5, 1.0), (1.5, 2.0)], [(0.5, 1.0000000000001), (1.5, 2.0)])
+        assertLinesEqual(self, *testInput)
+
+    def testNotEqual(self):
+        testInput = ([(0.5, 1.0), (1.5, 2.0)], [(0.5, 6.0), (1.5, 2.0)])
+        with self.assertRaises(AssertionError):
+            assertLinesEqual(self, *testInput)
+
+# Actual module tests
 
 class TestCoTangent(unittest.TestCase):
     def testSameSize(self):
@@ -218,5 +274,12 @@ class TestConvexHullDisks(unittest.TestCase):
     def testSimple(self):
         testInput = [(0, 0, 1), (3, 3, 1), (6, 0, 1)]
         expected = [(1.0, 1.414213562373095), (-1, 7.414213562373094), (0, -1)]
-        actual = challenge.convexHullDisksHalf(testInput)
+        actual = challenge.convexHullDisks(testInput)
         assertLinesEqual(self, actual, expected)
+
+    def testOverlapping(self):
+        testInput = [(0, 0, 1), (10, 0, 1), (5, -10, 1), (5, -3, 1)]
+        expected = [(0.0, 1.0), (1.9999999999999996, -22.236067977499786), (-2.0, -2.23606797749979)]
+        actual = challenge.convexHullDisks(testInput)
+        assertLinesEqual(self, actual, expected)
+
