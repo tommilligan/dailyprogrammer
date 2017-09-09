@@ -32,6 +32,57 @@ INF = float('inf')
 class GeometryException(Exception):
     pass
 
+def rotatePoint(point, theta):
+    """
+    Rotate an (x, y) point by theta radians
+
+    :param tuple point: (x, y)
+    :param float theta: Angle to rotate by anti-clockwise
+    """
+    x, y, = point
+    xPrime = x * cos(theta) - y * sin(theta)
+    yPrime = x * sin(theta) + y * cos(theta)
+    return (xPrime, yPrime)
+
+def rotateCircles(circles, theta):
+    """
+    Rotate a set of circles by theta degrees
+
+    :param list circles: [(x, y, r)]
+    :param float theta: Angle to rotate by anti-clockwise
+    """
+    for circle in circles:
+        x, y, r = circle
+        xPrime, yPrime = rotatePoint((x, y), theta)
+        circlePrime = (xPrime, yPrime, r)
+        yield circlePrime
+
+def minimumBoundingOrthogonal(circles):
+    """
+    Returns the minimum bounding box (axis-aligned) in the format::
+
+        ((x0, y0), (x1, y1), (x2, y2), (x3, y3))
+
+    Where the tuples are x, y coordinates from the bottom-left point clockwise
+
+    :param list circles: A list of circle 3-tuples (x, y, r)
+    :rtype: tuple
+    """
+    extrema = [(x - r, x + r, y - r, y + r) for x, y, r in circles]
+    xmins, xmaxs, ymins, ymaxs = zip(*extrema)
+    xmin, xmax, ymin, ymax = (min(xmins), max(xmaxs), min(ymins), max(ymaxs))
+    return ((xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin))
+
+def isLowerHull(dx, dy):
+    """
+    Checks if a line is part of the lower hull
+
+    :param float dx:
+    :param float dy:
+    """
+    lowerHull = (dx < 0.0) or (dx == 0.0 and dy < 0.0)
+    return lowerHull
+
 def line(a, b):
     """
     Return a line 2-tuple (m, c) from the input points (x, y)
@@ -63,7 +114,7 @@ def coTangent(p, q, anticlockwise=False):
 
     :param tuple p: A 3-tuple representing the circle (x, y, r)
     :param tuple q: As p
-    :rtype: 2-tuple representing line (m, c)
+    :rtype: 2-tuple representing tangent points and line (((x0, y0), (x1, y1)), (m, c))
     """
     logger.debug("Calculating cotangent of circles; %s, %s", p, q)
 
@@ -72,8 +123,8 @@ def coTangent(p, q, anticlockwise=False):
 
     dx, dy, dr = (i[1] - i[0] for i in zip(p, q))
 
-    lowerHull = (dx < 0.0) or (dx == 0.0 and dy < 0.0)
     # only mirror if XOR we are bottom hull or asking for anticlockwise outer tangents
+    lowerHull = isLowerHull(dx, dy)
     shouldMirror = lowerHull != anticlockwise
     if shouldMirror:
         mirror = -1
@@ -111,13 +162,14 @@ def coTangent(p, q, anticlockwise=False):
     for point in (tp, tq):
         logger.debug("Calculated tangent point; (%.3f, %.3f)", *point)
     tangent = line(tp, tq)
-    return tangent
+    return ((tp, tq), tangent)
 
 def findStartingCircle(circles, bottom=False):
     """
     Return the circle we should start at (leftmost edge of the list, rightmost for bottom)
 
     :param list circles: A list of circle 3-tuples (x, y, r)
+    :rtype: A circle (x, y, r)
     """
     logger.debug("Finding circle to start from")
     # Array of (xmin, circle) tuples (or (xmax, circle) tuple if bottom)
@@ -151,8 +203,10 @@ def intraTangents(startingCircle, circles, bottom=False):
     """
     for c in circles:
         try:
-            tangent = coTangent(startingCircle, c)
-            yield (tangent, c)
+            points, tangent = coTangent(startingCircle, c)
+            dx, dy = (i[1] - i[0] for i in zip(*points))
+            if isLowerHull(dx, dy) == bottom:
+                yield (tangent, c)
         except GeometryException as e:
             logger.warn("Could not form tangent from %s to %s; %s", startingCircle, c, e)
 
@@ -161,6 +215,7 @@ def convexHullDisksHalf(circles, bottom=False):
     Returns a set of lines describing half a convex hull of the disk set.
 
     :param list circles: A list of circle 3-tuples (x, y, r)
+    :rtype: List of (m, c) lines
     """
     logger.debug("Finding convex half-hull")
 
@@ -188,6 +243,14 @@ def convexHullDisksHalf(circles, bottom=False):
             currentCircle = nextCircle
         else:
             logger.debug("No remaining valid tangents, hull section complete")
+            if not hullLines:
+                b, l, t, r = minimumBoundingOrthogonal(circles)
+                if bottom:
+                    c = b
+                else:
+                    c = t
+                nextHullLine = (0.0, c)
+                hullLines.append(nextHullLine)
             break
     return hullLines 
 
@@ -196,6 +259,7 @@ def convexHullDisks(circles):
     Returns a set of lines describing the convex hull of the disk set.
 
     :param list circles: A list of circle 3-tuples (x, y, r)
+    :rtype: List of (m, c) lines
     """
     logger.debug("Finding convex hull")
 
@@ -203,9 +267,35 @@ def convexHullDisks(circles):
     circles = list(circles)
 
     hullLines = convexHullDisksHalf(circles)
+    logger.debug("Upper hull; %s", hullLines)
     hullLines.extend(convexHullDisksHalf(circles, bottom=True))
+    logger.debug("Complete hull; %s", hullLines)
+    if len(hullLines) < 3:
+        raise ValueError("A hull must have at least three lines - did you provide more than two circles?")
 
     return hullLines
+
+def boundingBoxesDisks(circles):
+    """
+    Returns bounding boxes in the format::
+
+        ((x0, y0), (x1, y1), (x2, y2), (x3, y3))
+
+    Where the tuples are x, y coordinates from the bottom-left point clockwise
+
+    :param list circles: A list of circle 3-tuples (x, y, r)
+    :rtype: tuple
+    """
+    hull = convexHullDisks(circles)
+    for line in hull:
+        m, c = line
+        theta = atan(m)
+        circlesRotated = rotateCircles(circles, -theta)
+        rotatatedBox = minimumBoundingOrthogonal(circlesRotated)
+        bl, tl, tr, br = rotatatedBox
+        area = (tr[0] - bl[0]) * (tr[1] - bl[1])
+        normalisedBox = tuple(rotatePoint(point, theta) for point in rotatatedBox)
+        yield (normalisedBox, area)
 
 def minimumBounding(circles):
     """
@@ -213,15 +303,14 @@ def minimumBounding(circles):
 
         ((x0, y0), (x1, y1), (x2, y2), (x3, y3))
 
-    Where the tuples are x, y coordinates from the leftmost point clockwise
+    Where the tuples are x, y coordinates from the bottom-left point clockwise
 
     :param list circles: A list of circle 3-tuples (x, y, r)
-    :rtype: tuple
+    :rtype: 4-tuple of floats
     """
-    extrema = [(x - r, x + r, y - r, y + r) for x, y, r in circles]
-    xmins, xmaxs, ymins, ymaxs = zip(*extrema)
-    xmin, xmax, ymin, ymax = (min(xmins), max(xmaxs), min(ymins), max(ymaxs))
-    return ((xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin))
+    boxes = boundingBoxesDisks(circles)
+    smallest = min(boxes, key=lambda box: box[1])
+    return smallest[0]
 
 def main(challengeInput):
     circles = [(float(s) for s in l.split(",")) for l in challengeInput.split("\n")]
