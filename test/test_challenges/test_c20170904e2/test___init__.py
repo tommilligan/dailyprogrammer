@@ -18,7 +18,7 @@ def exactZip(*args):
     if len(set(lengths)) <= 1:
         return zip(*args)
     else:
-        raise ValueError("Iterables were of different lengths")
+        raise ValueError("Iterables were of different lengths; {0}, {1}".format(*args))
 
 def assertLineEqual(self, actual, expected):
     """
@@ -28,7 +28,7 @@ def assertLineEqual(self, actual, expected):
         for a, e in exactZip(actual, expected):
             self.assertAlmostEqual(a, e)
     except AssertionError as e:
-        raise AssertionError("Line %s was expected to be %s; %s" % (actual, expected, e))
+        raise AssertionError("Line {0} was expected to be {1}; {2}".format(actual, expected, e))
 
 def assertLinesEqual(self, actual, expected):
     """
@@ -38,7 +38,7 @@ def assertLinesEqual(self, actual, expected):
         for a, e in exactZip(actual, expected):
             assertLineEqual(self, a, e)
     except AssertionError as e:
-        raise AssertionError("Lines %s were expected to be %s; %s" % (actual, expected, e))
+        raise AssertionError("Lines {0} were expected to be {1}; {2}".format(actual, expected, e))
 
 class TestExactZip(unittest.TestCase):
     def testEqualLength(self):

@@ -151,7 +151,7 @@ def intraTangents(startingCircle, circles, bottom=False):
     """
     for c in circles:
         try:
-            tangent = coTangent(startingCircle, c, bottom=bottom)
+            tangent = coTangent(startingCircle, c)
             yield (tangent, c)
         except GeometryException as e:
             logger.warn("Could not form tangent from %s to %s; %s", startingCircle, c, e)
