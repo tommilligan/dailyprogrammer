@@ -72,13 +72,14 @@ def coTangent(p, q, anticlockwise=False):
 
     dx, dy, dr = (i[1] - i[0] for i in zip(p, q))
 
-    lowerHull = (dx < 0) or (dx == 0 and dy < 0)
+    lowerHull = (dx < 0.0) or (dx == 0.0 and dy < 0.0)
     # only mirror if XOR we are bottom hull or asking for anticlockwise outer tangents
     shouldMirror = lowerHull != anticlockwise
     if shouldMirror:
         mirror = -1
     else:
         mirror = 1
+    logger.debug("cotangent choice; lowerHull {0}, anticlockwise {1}, shouldMirror {2}".format(lowerHull, anticlockwise, shouldMirror))
 
     l = sqrt(dx**2 + dy**2)
     if l == 0.0:
@@ -98,13 +99,13 @@ def coTangent(p, q, anticlockwise=False):
     except ValueError:
         raise GeometryException("One circle cannot be fully contained by the other")
 
-    psi = phi + (mirror * theta)
+    psi = (mirror * phi) + theta
 
     logger.debug("co-tanget constuction; phi %.3f, theta %.3f, psi %.3f", phi, theta, psi)
 
-    tp = (px - (sin(psi) * pr * mirror),
+    tp = (px - (sin(psi) * pr),
           py + (cos(psi) * pr * mirror))
-    tq = (qx - (sin(psi) * qr * mirror),
+    tq = (qx - (sin(psi) * qr),
           qy + (cos(psi) * qr * mirror))
 
     for point in (tp, tq):
