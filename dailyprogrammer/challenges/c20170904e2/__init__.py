@@ -99,13 +99,13 @@ def coTangent(p, q, anticlockwise=False):
     except ValueError:
         raise GeometryException("One circle cannot be fully contained by the other")
 
-    psi = (mirror * phi) + theta
+    psi = phi + theta
 
     logger.debug("co-tanget constuction; phi %.3f, theta %.3f, psi %.3f", phi, theta, psi)
 
-    tp = (px - (sin(psi) * pr),
+    tp = (px - (sin(psi) * pr * mirror),
           py + (cos(psi) * pr * mirror))
-    tq = (qx - (sin(psi) * qr),
+    tq = (qx - (sin(psi) * qr * mirror),
           qy + (cos(psi) * qr * mirror))
 
     for point in (tp, tq):

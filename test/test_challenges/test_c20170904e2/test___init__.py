@@ -145,7 +145,7 @@ class TestCoTangent(unittest.TestCase):
 
     def testLargerSizeReversed(self):
         testInput = ((12, 10, 3), (0, 0, 1))
-        expected = (0.6415998507443317, -1.150400895534009)
+        expected = (0.6358295230738619, -1.1850228615568286)
         actual = challenge.coTangent(*testInput)
         assertLineEqual(self, actual, expected)
 
@@ -182,7 +182,6 @@ class TestCoTangent(unittest.TestCase):
         expected = (-0.35355339059327373, 1.0606601717798212)
         actual = challenge.coTangent(*testInput)
         assertLineEqual(self, actual, expected)
-        raise ValueError("spam")
 
     def testTouchingOuterReversed(self):
         testInput = ((1.5, 0, 0.5), (0, 0, 1))
