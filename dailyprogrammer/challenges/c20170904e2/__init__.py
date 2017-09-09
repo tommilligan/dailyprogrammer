@@ -51,15 +51,15 @@ def line(a, b):
     logger.debug("Calculated line; y = %.3fx + %.3f", m, c)
     return line
 
-def coTangent(p, q, bottom=False):
+def coTangent(p, q, anticlockwise=False):
     """
-    Calculate the upper (edge-case, left) cotangent of two circles ``p`` and ``q``::
+    Calculate the cotangent that sits to the left of the line p -> q
 
           /O q
          /
         /o   p
 
-    If bottom is ``True``, the mirroring tangent on the bottom(right) is found.
+    If anticlockwise is ``True``, the mirroring tangent is found.
 
     :param tuple p: A 3-tuple representing the circle (x, y, r)
     :param tuple q: As p
@@ -67,15 +67,18 @@ def coTangent(p, q, bottom=False):
     """
     logger.debug("Calculating cotangent of circles; %s, %s", p, q)
 
-    if bottom:
-        mirror = -1
-    else:
-        mirror = 1
-
     px, py, pr = p
     qx, qy, qr = q
 
     dx, dy, dr = (i[1] - i[0] for i in zip(p, q))
+
+    lowerHull = (dx < 0) or (dx == 0 and dy < 0)
+    # only mirror if XOR we are bottom hull or asking for anticlockwise outer tangents
+    shouldMirror = lowerHull != anticlockwise
+    if shouldMirror:
+        mirror = -1
+    else:
+        mirror = 1
 
     l = sqrt(dx**2 + dy**2)
     if l == 0.0:
@@ -84,7 +87,7 @@ def coTangent(p, q, bottom=False):
     # phi is the angle at which the circle centres are aligned
     try:
         phi = atan(dy / dx)
-    # If the circles are stacked horizontally, take leftmost tangent
+    # If the circles are stacked horizontally, take leftmost tangent if q above p
     except ZeroDivisionError:
         phi = pi / 2
     

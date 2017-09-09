@@ -125,22 +125,16 @@ class TestCoTangent(unittest.TestCase):
         actual = challenge.coTangent(*testInput)
         assertLineEqual(self, actual, expected)
 
-    def testSameSizeBottom(self):
-        testInput = ((0, 0, 1), (2, 1, 1))
-        expected = (0.5, -1.118033988749895)
-        actual = challenge.coTangent(*testInput, bottom=True)
-        assertLineEqual(self, actual, expected)
-
-    def testSameSizeHorizontalBottom(self):
-        testInput = ((0, 0, 1), (1, 0, 1))
+    def testSameSizeHorizontalReversed(self):
+        testInput = ((1, 0, 1), (0, 0, 1))
         expected = (0, -1)
-        actual = challenge.coTangent(*testInput, bottom=True)
+        actual = challenge.coTangent(*testInput)
         assertLineEqual(self, actual, expected)
 
-    def testSameSizeVerticalBottom(self):
-        testInput = ((0, 0, 1), (0, 1, 1))
+    def testSameSizeVerticalReversed(self):
+        testInput = ((0, 1, 1), (0, 0, 1))
         expected = (INF, 1)
-        actual = challenge.coTangent(*testInput, bottom=True)
+        actual = challenge.coTangent(*testInput)
         assertLineEqual(self, actual, expected)
 
     def testLargerSize(self):
@@ -171,10 +165,10 @@ class TestCoTangent(unittest.TestCase):
         actual = challenge.coTangent(*testInput)
         assertLineEqual(self, actual, expected)
 
-    def testTouchingInnerBottom(self):
-        testInput = ((0, 0, 1), (0.5, 0, 0.5))
+    def testTouchingInnerReversed(self):
+        testInput = ((0.5, 0, 0.5), (0, 0, 1))
         expected = (INF, 1)
-        actual = challenge.coTangent(*testInput, bottom=True)
+        actual = challenge.coTangent(*testInput)
         assertLineEqual(self, actual, expected)
 
     def testTouchingOuter(self):
@@ -183,10 +177,10 @@ class TestCoTangent(unittest.TestCase):
         actual = challenge.coTangent(*testInput)
         assertLineEqual(self, actual, expected)
 
-    def testTouchingOuterBottom(self):
-        testInput = ((0, 0, 1), (1.5, 0, 0.5))
+    def testTouchingOuterReversed(self):
+        testInput = ((1.5, 0, 0.5), (0, 0, 1))
         expected = (0.35355339059327373, -1.0606601717798212)
-        actual = challenge.coTangent(*testInput, bottom=True)
+        actual = challenge.coTangent(*testInput)
         assertLineEqual(self, actual, expected)
 
 class TestFindStartingCircle(unittest.TestCase):
