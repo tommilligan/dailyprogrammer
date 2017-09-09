@@ -88,7 +88,7 @@ def coTangent(p, q, anticlockwise=False):
     # phi is the angle at which the circle centres are aligned
     try:
         phi = atan(dy / dx)
-    # If the circles are stacked horizontally, take leftmost tangent if q above p
+    # If the circles are stacked vertically, take leftmost tangent if q above p
     except ZeroDivisionError:
         phi = pi / 2
     
