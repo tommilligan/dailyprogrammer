@@ -9,9 +9,15 @@
 ## Installation
 
 Clone and install using pip
-```
+```bash
 git clone git@github.com:tommilligan/dailyprogrammer
 pip install ./dailyprogrammer
+```
+
+Any additional scripts in the `notes` folder require dev-dependencies
+
+```bash
+pip install -r requirements-dev.txt
 ```
 
 ## Currently solved challenges
