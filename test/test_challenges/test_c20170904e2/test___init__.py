@@ -247,7 +247,7 @@ class TestFindStartingCircle(unittest.TestCase):
         actual = challenge.findStartingCircle(testInput, bottom=True)
         self.assertEqual(actual, expected)
 
-    def testDouble(self):
+    def testDoubleBottom(self):
         testInput = [(0, 0, 1), (0, -2, 1)]
         expected = (0, 0, 1)
         actual = challenge.findStartingCircle(testInput, bottom=True)
@@ -258,9 +258,7 @@ class TestIntraTangents(unittest.TestCase):
         testInput = ((0, 0, 1), [(0, 0, 1)])
         expected = []
         actual = challenge.intraTangents(*testInput)
-        for a, e in zip(actual, expected):
-            assertTupleAlmostEqual(self, a[0], e[0])
-            self.assertEqual(a[1], e[1])
+        self.assertEqual(list(actual), expected)
 
     def testSimple(self):
         testInput = ((0, 0, 1), [(0, 0, 1), (3, 3, 1), (4, -1, 0.5)])
