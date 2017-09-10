@@ -29,15 +29,16 @@ def main(circles):
     draw = ImageDraw.Draw(im)
 
     # Draw circles
+    logger.warn("Drawing circles")
     for circle in circles:
         x, y, r = circle
         coords = [i * multiplier for i in (x-r, y-r, x+r, y+r)]
         draw.ellipse(coords, outline=(127, 127, 127))
 
     # Draw tangent lines
+    logger.warn("Drawing tangent lines")
     hull = challenge.convexHullDisks(circles)
     for line in hull:
-        logger.warn("Line; %s", line)
         m, c = line
 
         c = c * multiplier
@@ -48,10 +49,10 @@ def main(circles):
         else:
             points = list((c, y) for y in xs)
 
-        logger.warn("Points; %s", points)
         draw.line(points, fill=(255, 0, 0), width=1)
 
     # Draw smallest box
+    logger.warn("Drawing box")
     box = challenge.minimumBounding(circles)
     for i, point in enumerate(box):
         a = box[i]
@@ -61,7 +62,6 @@ def main(circles):
             b = box[0]
         points = [a, b]
         points = list(tuple(p * multiplier for p in point) for point in points)
-        logger.warn("Points; %s", points)
         draw.line(points, fill=(0, 0, 255), width=1)
 
     im = im.transpose(Image.FLIP_TOP_BOTTOM)
