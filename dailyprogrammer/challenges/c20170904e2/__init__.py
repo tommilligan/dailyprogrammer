@@ -208,7 +208,7 @@ def intraTangents(startingCircle, circles, bottom=False):
             if isLowerHull(dx, dy) == bottom:
                 yield (tangent, c)
         except GeometryException as e:
-            logger.warn("Could not form tangent from %s to %s; %s", startingCircle, c, e)
+            logger.info("Could not form tangent from %s to %s; %s", startingCircle, c, e)
 
 def convexHullDisksHalf(circles, bottom=False):
     """
