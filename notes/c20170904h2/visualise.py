@@ -23,16 +23,22 @@ def getY(line, x):
     y = int((m * x) + c)
     return y
 
-def main(circles):
-    multiplier = 50
-    im = Image.new("RGB", (10*multiplier, 10*multiplier), (255, 255, 255))
+def main(circles, scale=50, units=10, offset=(0, 0)):
+    """
+    :param circles
+    """
+    # Offset circles to get them positive
+    circles = list((x+offset[0], y+offset[1], r) for x, y, r in circles)
+
+    dimensions = (units * scale, ) * 2
+    im = Image.new("RGB", dimensions, (255, 255, 255))
     draw = ImageDraw.Draw(im)
 
     # Draw circles
     logger.warn("Drawing circles")
     for circle in circles:
         x, y, r = circle
-        coords = [i * multiplier for i in (x-r, y-r, x+r, y+r)]
+        coords = [i * scale for i in (x-r, y-r, x+r, y+r)]
         draw.ellipse(coords, outline=(127, 127, 127))
 
     # Draw tangent lines
@@ -41,7 +47,7 @@ def main(circles):
     for line in hull:
         m, c = line
 
-        c = c * multiplier
+        c = c * scale
 
         xs = [-im.width, im.width]
         if abs(m) != INF:
@@ -61,7 +67,7 @@ def main(circles):
         except IndexError:
             b = box[0]
         points = [a, b]
-        points = list(tuple(p * multiplier for p in point) for point in points)
+        points = list(tuple(p * scale for p in point) for point in points)
         draw.line(points, fill=(0, 0, 255), width=1)
 
     im = im.transpose(Image.FLIP_TOP_BOTTOM)
@@ -73,6 +79,12 @@ def main(circles):
     sys.stdout.buffer.write(imagedata)
 
 if __name__ == "__main__":
-    circles = [(3, 3, 1), (3, 6, 1), (4, 7, 1.5), (8, 6, 0.5), (7, 5, 0.75), (5, 4.5, 2), (5.5, 3.5, 0.125)]
-    main(circles)
+    # challenge
+    #main([(1,1,2), (2,2,0.5), (-1,-3,2), (5,2,1)],
+    #        scale=25,
+    #        main=20,
+    #        offset=(9, 10))
+    
+    # demo
+    main([(3, 3, 1), (3, 6, 1), (4, 7, 1.5), (8, 6, 0.5), (7, 5, 0.75), (5, 4.5, 2), (5.5, 3.5, 0.125)])
 

@@ -27,7 +27,7 @@ def mainParser():
     Command line parser
     """
     parser = argparse.ArgumentParser("dailyprogrammer")
-    parser.add_argument("-v", "--verbose", action="count", help="Turn logging")
+    parser.add_argument("-v", "--verbose", action="count", default=0, help="Turn logging")
     parser.add_argument("-l", "--list", action="store_true", help="List available challanges and exit")
     parser.add_argument("challenge", nargs="?", help="Challenge id. Matches the regex 'c\d{8}[hme]\d+' and style cYYYYMMDD<level><serial>")
     parser.add_argument("input", nargs="?", default=None, help="Challenge input. Defaults to stdin (one-read only)")
