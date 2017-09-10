@@ -1,7 +1,6 @@
 astroid==1.5.3
 cov-core==1.15.0
 coverage==4.4.1
--e git+git@github.com:tommilligan/dailyprogrammer@a0ef1a92f6b9e88a2f007a3550ea63ba371ff10e#egg=dailyprogrammer
 isort==4.2.15
 lazy-object-proxy==1.3.1
 mccabe==0.6.1
