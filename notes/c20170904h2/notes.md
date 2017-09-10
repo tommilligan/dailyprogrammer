@@ -40,6 +40,6 @@ List of bounding box points in `(x, y)` format:
 
 ## References
 
-* A convex hull algorithm for discs, and applications (Rappaport D, 1992) http://www.sciencedirect.com/science/article/pii/092577219290015K)
-* Solving Geometric Problems with the Rotating Calipers (Toussaint G, 1983) http://www.sciencedirect.com/science/article/pii/092577219290015K)
+* [A convex hull algorithm for discs, and applications (Rappaport D, 1992)](http://www.sciencedirect.com/science/article/pii/092577219290015K)
+* [Solving Geometric Problems with the Rotating Calipers (Toussaint G, 1983)](https://www.cs.swarthmore.edu/~adanner/cs97/s08/pdf/calipers.pdf)
 
