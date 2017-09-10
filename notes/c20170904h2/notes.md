@@ -43,3 +43,4 @@ List of bounding box points in `(x, y)` format:
 * [A convex hull algorithm for discs, and applications (Rappaport D, 1992)](http://www.sciencedirect.com/science/article/pii/092577219290015K)
 * [Solving Geometric Problems with the Rotating Calipers (Toussaint G, 1983)](https://www.cs.swarthmore.edu/~adanner/cs97/s08/pdf/calipers.pdf)
 * [Andrew's monotone chain convex hull algorithm](https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain), an implementation for points rather than circles
+* [Incremental algorithms for finding the convex hulls of circles and the lower envelopes of parabolas (Devillers 0, Golin M 1994)](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.34.6753&rep=rep1&type=pdf), bit overcomplex for this use case
