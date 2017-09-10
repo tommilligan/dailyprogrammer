@@ -313,7 +313,7 @@ def minimumBounding(circles):
     return smallest[0]
 
 def main(challengeInput):
-    circles = [(float(s) for s in l.split(",")) for l in challengeInput.split("\n")]
+    circles = [tuple(float(s) for s in l.split(",")) for l in challengeInput.split("\n")]
     points = minimumBounding(circles)
     challengeOutput = ", ".join("({0:.3f}, {1:.3f})".format(*point) for point in points)
     return challengeOutput

@@ -17,7 +17,6 @@ class TestMinimumBoundingOrthogonal(unittest.TestCase):
         actual = challenge.minimumBoundingOrthogonal(testInput)
         self.assertEqual(actual, expected)
 
-
 class TestMain(unittest.TestCase):
     def testConversion(self):
         testInput = "0,0,1\n0.5,-0.5,1"

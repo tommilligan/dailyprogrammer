@@ -312,13 +312,7 @@ class TestConvexHullDisks(unittest.TestCase):
         testInput = [(0, 0, 1), (0, 10, 1)]
         with self.assertRaises(ValueError):
             challenge.convexHullDisks(testInput)
-    """
-    def testDoublePointyVertical(self):
-        testInput = [(0, 0, 1), (0, 10, 0.5)]
-        expected = [(19.974984355438178, 20.0), (-19.974984355438178, 20.0), (0.0, -1)]
-        actual = challenge.convexHullDisks(testInput)
-        assertTuplesAlmostEqual(self, actual, expected)
-    """
+
     def testDoublePointyHorizontal(self):
         testInput = [(0, 0, 1), (10, 0, 0.5)]
         with self.assertRaises(ValueError):
@@ -336,8 +330,8 @@ class TestConvexHullDisks(unittest.TestCase):
         actual = challenge.convexHullDisks(testInput)
         assertTuplesAlmostEqual(self, actual, expected)
 
-class BoundingBoxesDisks(unittest.TestCase):
-    def testSingle(self):
+class TestBoundingBoxesDisks(unittest.TestCase):
+    def testTriangle(self):
         testInput = [(0, 0, 1), (10, 0, 1), (5, 2, 1)]
         expected = [(((0.82222433029643, -4.748143229308327),
                         (-1.299867367239363, 0.5570860145311558),
@@ -358,4 +352,33 @@ class BoundingBoxesDisks(unittest.TestCase):
         for a, e in zip(actual, expected):
             assertTuplesAlmostEqual(self, a[0], e[0])
             self.assertAlmostEqual(a[1], e[1])
+
+class TestMinimumBounding(unittest.TestCase):
+    def testOrthogonalSquare(self):
+        testInput = [(0, 0, 1), (10, 10, 1), (0, 10, 1), (10, 0, 1)]
+        expected = ((11, -1), (-1, -1), (-1.0, 11.0), (11.0, 11.0))
+        actual = challenge.minimumBounding(testInput)
+        assertTuplesAlmostEqual(self, actual, expected)
+
+    def testOrthogonalTriangle(self):
+        testInput = [(0, 0, 1), (10, 0, 1), (5, 2, 1)]
+        expected = ((-1.0, -1.0), (-1.0, 3.0), (11.0, 3.0), (11.0, -1.0))
+        actual = challenge.minimumBounding(testInput)
+        assertTuplesAlmostEqual(self, actual, expected)
+
+    def testAngledTriangle(self):
+        testInput = [(0, 0, 1), (10, 10, 1), (3, 7, 1)]
+        expected = ((0.0, -1.414213562373095),
+                    (-3.414213562373095, 2.0),
+                    (8.0, 13.414213562373094),
+                    (11.414213562373096, 10.0))
+        actual = challenge.minimumBounding(testInput)
+        assertTuplesAlmostEqual(self, actual, expected)
+
+class TestMain(unittest.TestCase):
+    def testConversion(self):
+        testInput = "0,0,1\n10,10,1\n3,7,1"
+        expected = "(-0.000, -1.414), (-3.414, 2.000), (8.000, 13.414), (11.414, 10.000)"
+        actual = challenge.main(testInput)
+        self.assertEqual(actual, expected)
 
