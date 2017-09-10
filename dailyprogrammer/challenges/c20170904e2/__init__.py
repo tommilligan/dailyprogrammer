@@ -244,11 +244,11 @@ def convexHullDisksHalf(circles, bottom=False):
         else:
             logger.debug("No remaining valid tangents, hull section complete")
             if not hullLines:
-                b, l, t, r = minimumBoundingOrthogonal(circles)
+                bl, tl, tr, br = minimumBoundingOrthogonal(circles)
                 if bottom:
-                    c = b
+                    c = bl[1]
                 else:
-                    c = t
+                    c = tl[1]
                 nextHullLine = (0.0, c)
                 hullLines.append(nextHullLine)
             break

@@ -318,6 +318,12 @@ class TestConvexHullDisks(unittest.TestCase):
         with self.assertRaises(ValueError):
             challenge.convexHullDisks(testInput)
 
+    def testDoublePointyVertical(self):
+        testInput = [(0, 0, 1), (0, 10, 0.5)]
+        expected = [(19.974984355438178, 20.0), (-19.974984355438178, 20.0), (0.0, -1)]
+        actual = challenge.convexHullDisks(testInput)
+        assertTuplesAlmostEqual(self, actual, expected)
+
     def testSimple(self):
         testInput = [(0, 0, 1), (3, 3, 1), (6, 0, 1)]
         expected = [(1.0, 1.414213562373095), (-1, 7.414213562373094), (0, -1)]
