@@ -15,10 +15,10 @@ Method:
 
 In this module:
 
-* a line is represented as a (rho, theta) tuple
-* a circular arc is represented as a circle-sector (x, y, r, start, end)
-* 
-
+* a line is represented as a (gradient, intercept) tuple
+* a circle is represented as a (x, y, r) tuple
+* a bounding box is represented by a ((x, y) * 4) tuple
+* a point is represented by an (x, y) tuple
 """
 
 from math import sqrt, atan, asin, sin, cos, pi

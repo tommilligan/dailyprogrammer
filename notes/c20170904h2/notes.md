@@ -11,7 +11,7 @@ Approach:
 * Find the convex hull of the set
     * For the upper/lower
         * Find the left/rightmost circle to start with
-        * Find all left-handed cotangents between other circles
+        * Find all left-handed cotangents between other circles (defined as the tangent vector having an acute anti-clockwise angle to the vector between the two circles)
         * Find the tangent with the most positive gradient (but less than the previous one)
         * Add this tangent to the hull
         * Loop with the newly found circle
@@ -37,3 +37,9 @@ Each circle on a line in `x,y,r` format
 List of bounding box points in `(x, y)` format:
 
 `bottom-left, top-left, top-right, bottom-right"`
+
+## References
+
+* A convex hull algorithm for discs, and applications (Rappaport D, 1992) http://www.sciencedirect.com/science/article/pii/092577219290015K)
+* Solving Geometric Problems with the Rotating Calipers (Toussaint G, 1983) http://www.sciencedirect.com/science/article/pii/092577219290015K)
+
